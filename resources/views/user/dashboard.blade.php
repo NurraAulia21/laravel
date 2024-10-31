@@ -1,5 +1,13 @@
 <x-app-layout>
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    <style>
+            #map { height: 250px; }
+        </style>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         <x-app.navbar />
         <div class="container-fluid py-4 px-5">
@@ -9,6 +17,44 @@
                         <div class="mb-md-0 mb-3">
                             <!-- <h3 class="font-weight-bold mb-0">Hello User!</h3> ini ganti ama map
                             <p class="mb-0">Apps you might like!</p> -->
+                            <script>
+                                var map = L.map('map').setView([51.505, -0.09], 13);
+
+                                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    maxZoom: 19,
+                                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                                }).addTo(map);
+
+                                navigator.geolocation.watchPosition(success, error);
+                                let marker, circle, zoomed;
+
+                                function success(pos){
+                                    const lat = pos.coords.latitude;
+                                    const lng = pos.coords.longitude;
+                                    const accuracy = pos.coords.accuracy;
+
+                                    if (marker){
+                                        map.removeLayer(marker);
+                                        map.removeLayer(circle);
+                                    }
+                                    marker = L.marker([lat, lng]).addTo(map);
+                                    circle = L.circle([lat, lng], {radius: accuracy }).addTo(map);
+
+                                    if (!zoomed){
+                                        zoomed = map.fitBounds(circle.getBounds());
+                                    }
+
+                                    map.setView([lat, lng]);
+                                }
+                                function error(err){
+                                    if (err.code === 1){
+                                        alert("Please allow geolocation access");
+                                    } else {
+                                        alert("Cannot get location");
+                                    }
+                                }
+                            </script>
+                            
                         </div>
                         <button type="button"
                             class="btn btn-sm btn-white btn-icon d-flex align-items-center mb-0 ms-md-auto mb-sm-0 mb-2 me-2">
