@@ -32,7 +32,7 @@
                 </div>
             </div>
             <hr class="my-0">
-            pokonya ini form nambah gedung
+            blablabla
             <x-app.footer />
         </div>
     </main>
